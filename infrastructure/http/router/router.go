@@ -16,5 +16,10 @@ func NewRouter(ctr controllers.AppController) *gin.Engine {
 		users.POST("/register", middleware.UserRequestValidator(), handler.PostUserRegister(ctr))
 	}
 
+	photos := router.Group("/photos", middleware.Authentication())
+	{
+		photos.POST("", middleware.PhotoRequestValidator(), handler.PostPhoto(ctr))
+	}
+
 	return router
 }

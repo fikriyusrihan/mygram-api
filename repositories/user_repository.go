@@ -19,6 +19,11 @@ func NewUserRepository(db *gorm.DB) repo_interfaces.UserRepository {
 func (u userRepository) CreateUser(user *entities.User) (*entities.User, errors.Error) {
 	err := u.db.Model(&entities.User{}).Create(user).Error
 	if err != nil {
+		if err == gorm.ErrDuplicatedKey {
+			errs := errors.NewConflictError("User with this email or username already exists. Please try again with a different email or username")
+			return nil, errs
+		}
+
 		log.Println(err)
 		errs := errors.NewInternalServerError("An error occurred while processing your request. Please try again later")
 		return nil, errs

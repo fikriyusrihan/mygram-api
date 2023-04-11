@@ -58,3 +58,29 @@ func AuthRequestValidator() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+func PhotoRequestValidator() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var request dto.PhotoRequest
+		if err := c.ShouldBindJSON(&request); err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, dto.ApiResponse{
+				Code:    http.StatusBadRequest,
+				Status:  "BAD_REQUEST",
+				Message: "Invalid request body. Please check your request body and try again",
+			})
+			return
+		}
+
+		if err := helpers.Validate(request); err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, dto.ApiResponse{
+				Code:    http.StatusBadRequest,
+				Status:  "BAD_REQUEST",
+				Message: "Invalid request body. Please check your request body and try again",
+			})
+			return
+		}
+
+		c.Set("payload", request)
+		c.Next()
+	}
+}
