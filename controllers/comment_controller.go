@@ -124,13 +124,22 @@ func (ctr commentController) HandleGetCommentByID(c *gin.Context) {
 }
 
 func (ctr commentController) HandleGetComments(c *gin.Context) {
-	pid, _ := strconv.Atoi(c.Param("photoId"))
-	response, err := ctr.commentService.GetComments(pid)
+	pid, err := strconv.Atoi(c.Param("photoId"))
 	if err != nil {
-		c.AbortWithStatusJSON(err.Code(), dto.ApiResponse{
-			Code:    err.Code(),
-			Status:  err.Status(),
-			Message: err.Message(),
+		c.AbortWithStatusJSON(http.StatusBadRequest, dto.ApiResponse{
+			Code:    http.StatusBadRequest,
+			Status:  "BAD_REQUEST",
+			Message: "Invalid photo id. Photo id must be an integer",
+		})
+		return
+	}
+
+	response, errs := ctr.commentService.GetComments(pid)
+	if errs != nil {
+		c.AbortWithStatusJSON(errs.Code(), dto.ApiResponse{
+			Code:    errs.Code(),
+			Status:  errs.Status(),
+			Message: errs.Message(),
 		})
 		return
 	}

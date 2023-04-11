@@ -19,7 +19,7 @@ func NewAppControllerInstance() (controllers.AppController, error) {
 
 	authService := services.NewAuthService(userRepository)
 	photoService := services.NewPhotoService(photoRepository)
-	commentService := services.NewCommentService(commentRepository)
+	commentService := services.NewCommentService(commentRepository, photoRepository)
 
 	authController := controllers.NewAuthController(authService)
 	photoController := controllers.NewPhotoController(photoService)

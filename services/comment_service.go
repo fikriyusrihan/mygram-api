@@ -17,10 +17,17 @@ type CommentService interface {
 
 type commentService struct {
 	commentRepository repo_interfaces.CommentRepository
+	photoRepository   repo_interfaces.PhotoRepository
 }
 
-func NewCommentService(commentRepository repo_interfaces.CommentRepository) CommentService {
-	return &commentService{commentRepository}
+func NewCommentService(
+	commentRepository repo_interfaces.CommentRepository,
+	photoRepository repo_interfaces.PhotoRepository,
+) CommentService {
+	return &commentService{
+		commentRepository,
+		photoRepository,
+	}
 }
 
 func (c commentService) CreateComment(payload *dto.CommentRequest) (*dto.CommentResponse, errors.Error) {
@@ -66,6 +73,11 @@ func (c commentService) GetCommentByID(id int) (*dto.CommentResponse, errors.Err
 }
 
 func (c commentService) GetComments(pid int) ([]dto.CommentResponse, errors.Error) {
+	_, err := c.photoRepository.GetPhotoByID(pid)
+	if err != nil {
+		return nil, err
+	}
+
 	comments, err := c.commentRepository.GetComments(pid)
 	if err != nil {
 		return nil, err
