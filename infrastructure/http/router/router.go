@@ -19,6 +19,14 @@ func NewRouter(ctr controllers.AppController) *gin.Engine {
 	photos := router.Group("/photos", middleware.Authentication())
 	{
 		photos.POST("", middleware.PhotoRequestValidator(), handler.PostPhoto(ctr))
+		photos.GET("", handler.GetPhotos(ctr))
+		photos.GET("/:photoId", handler.GetPhotoByID(ctr))
+
+		authorizedPhotos := photos.Group("/:photoId", middleware.PhotoAuthorization())
+		{
+			authorizedPhotos.PUT("", middleware.PhotoRequestValidator(), handler.PutPhoto(ctr))
+			authorizedPhotos.DELETE("", handler.DeletePhoto(ctr))
+		}
 	}
 
 	return router

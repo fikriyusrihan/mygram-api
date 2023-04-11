@@ -16,6 +16,7 @@ func (p *Photo) ToResponse() dto.PhotoResponse {
 		Title:     p.Title,
 		Caption:   p.Caption,
 		PhotoURL:  p.PhotoURL,
+		UserID:    p.UserID,
 		CreatedAt: p.CreatedAt.String(),
 		UpdatedAt: p.UpdatedAt.String(),
 	}
@@ -25,4 +26,5 @@ func (p *Photo) FromRequest(request *dto.PhotoRequest) {
 	p.Title = request.Title
 	p.Caption = request.Caption
 	p.PhotoURL = request.PhotoURL
+	p.UserID = request.UserID
 }

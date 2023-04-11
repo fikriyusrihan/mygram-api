@@ -23,7 +23,7 @@ func PhotoAuthorization() gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusBadRequest, dto.ApiResponse{
 				Code:    http.StatusBadRequest,
 				Status:  "BAD_REQUEST",
-				Message: "Invalid photo id",
+				Message: "Invalid photo id. Photo id must be an integer",
 			})
 			return
 		}
@@ -35,7 +35,7 @@ func PhotoAuthorization() gin.HandlerFunc {
 				c.AbortWithStatusJSON(http.StatusNotFound, dto.ApiResponse{
 					Code:    http.StatusNotFound,
 					Status:  "NOT_FOUND",
-					Message: "Photo not found",
+					Message: "The requested photo does not exist",
 				})
 				return
 			}
@@ -44,7 +44,7 @@ func PhotoAuthorization() gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, dto.ApiResponse{
 				Code:    http.StatusInternalServerError,
 				Status:  "INTERNAL_SERVER_ERROR",
-				Message: "Something went wrong",
+				Message: "An error occurred while processing your request. Please try again later",
 			})
 			return
 		}

@@ -6,6 +6,7 @@ import (
 	"my-gram/domain/dto"
 	"my-gram/services"
 	"net/http"
+	"strconv"
 )
 
 type PhotoController interface {
@@ -50,21 +51,95 @@ func (p photoController) HandleCreatePhoto(c *gin.Context) {
 }
 
 func (p photoController) HandleUpdatePhoto(c *gin.Context) {
-	//TODO implement me
-	panic("implement me")
+	claim := c.MustGet("claim").(jwt.MapClaims)
+	payload := c.MustGet("payload").(dto.PhotoRequest)
+
+	uid := int(claim["id"].(float64))
+	pid, _ := strconv.Atoi(c.Param("photoId"))
+	payload.UserID = uint(uid)
+
+	response, errs := p.photoService.UpdatePhoto(pid, &payload)
+	if errs != nil {
+		c.AbortWithStatusJSON(errs.Code(), dto.ApiResponse{
+			Code:    errs.Code(),
+			Status:  errs.Status(),
+			Message: errs.Message(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, dto.ApiResponse{
+		Code:    http.StatusOK,
+		Status:  "OK",
+		Message: "Photo updated successfully",
+		Data:    response,
+	})
 }
 
 func (p photoController) HandleDeletePhoto(c *gin.Context) {
-	//TODO implement me
-	panic("implement me")
+	pid, _ := strconv.Atoi(c.Param("photoId"))
+
+	errs := p.photoService.DeletePhoto(pid)
+	if errs != nil {
+		c.AbortWithStatusJSON(errs.Code(), dto.ApiResponse{
+			Code:    errs.Code(),
+			Status:  errs.Status(),
+			Message: errs.Message(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, dto.ApiResponse{
+		Code:    http.StatusOK,
+		Status:  "OK",
+		Message: "Photo deleted successfully",
+	})
 }
 
 func (p photoController) HandleGetPhotoByID(c *gin.Context) {
-	//TODO implement me
-	panic("implement me")
+	pid, err := strconv.Atoi(c.Param("photoId"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, dto.ApiResponse{
+			Code:    http.StatusBadRequest,
+			Status:  "BAD_REQUEST",
+			Message: "Invalid photo id. Photo id must be an integer",
+		})
+		return
+	}
+
+	response, errs := p.photoService.GetPhotoByID(pid)
+	if errs != nil {
+		c.AbortWithStatusJSON(errs.Code(), dto.ApiResponse{
+			Code:    errs.Code(),
+			Status:  errs.Status(),
+			Message: errs.Message(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, dto.ApiResponse{
+		Code:    http.StatusOK,
+		Status:  "OK",
+		Message: "Photo retrieved successfully",
+		Data:    response,
+	})
 }
 
 func (p photoController) HandleGetPhotos(c *gin.Context) {
-	//TODO implement me
-	panic("implement me")
+	response, errs := p.photoService.GetPhotos()
+	if errs != nil {
+		c.AbortWithStatusJSON(errs.Code(), dto.ApiResponse{
+			Code:    errs.Code(),
+			Status:  errs.Status(),
+			Message: errs.Message(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, dto.ApiResponse{
+		Code:    http.StatusOK,
+		Status:  "OK",
+		Message: "Photos retrieved successfully",
+		Data:    response,
+	})
 }

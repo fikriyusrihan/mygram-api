@@ -10,3 +10,27 @@ func PostPhoto(ctr controllers.AppController) gin.HandlerFunc {
 		ctr.HandleCreatePhoto(ctx)
 	}
 }
+
+func PutPhoto(ctr controllers.AppController) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctr.HandleUpdatePhoto(c)
+	}
+}
+
+func DeletePhoto(ctr controllers.AppController) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctr.HandleDeletePhoto(c)
+	}
+}
+
+func GetPhotos(ctr controllers.AppController) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctr.HandleGetPhotos(c)
+	}
+}
+
+func GetPhotoByID(ctr controllers.AppController) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctr.HandleGetPhotoByID(c)
+	}
+}
