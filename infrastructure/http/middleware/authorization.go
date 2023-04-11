@@ -12,12 +12,62 @@ import (
 	"strconv"
 )
 
+func CommentAuthorization() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		database := db.GetDBInstance()
+		claim := c.MustGet("claim").(jwt.MapClaims)
+
+		uid := int(claim["id"].(float64))
+		cid, err := strconv.Atoi(c.Param("commentId"))
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, dto.ApiResponse{
+				Code:    http.StatusBadRequest,
+				Status:  "BAD_REQUEST",
+				Message: "Invalid comment id. Comment id must be an integer",
+			})
+			return
+		}
+
+		var comment entities.Comment
+		err = database.Select("user_id").First(&comment, cid).Error
+		if err != nil {
+			if err == gorm.ErrRecordNotFound {
+				c.AbortWithStatusJSON(http.StatusNotFound, dto.ApiResponse{
+					Code:    http.StatusNotFound,
+					Status:  "NOT_FOUND",
+					Message: "The requested comment does not exist",
+				})
+				return
+			}
+
+			log.Println(err)
+			c.AbortWithStatusJSON(http.StatusInternalServerError, dto.ApiResponse{
+				Code:    http.StatusInternalServerError,
+				Status:  "INTERNAL_SERVER_ERROR",
+				Message: "An error occurred while processing your request. Please try again later",
+			})
+			return
+		}
+
+		if comment.UserID != uid {
+			c.AbortWithStatusJSON(http.StatusForbidden, dto.ApiResponse{
+				Code:    http.StatusForbidden,
+				Status:  "FORBIDDEN",
+				Message: "You are not authorized to access this resource",
+			})
+			return
+		}
+
+		c.Next()
+	}
+}
+
 func PhotoAuthorization() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		database := db.GetDBInstance()
 		claim := c.MustGet("claim").(jwt.MapClaims)
 
-		uid := uint(claim["id"].(float64))
+		uid := int(claim["id"].(float64))
 		pid, err := strconv.Atoi(c.Param("photoId"))
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, dto.ApiResponse{

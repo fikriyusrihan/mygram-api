@@ -15,16 +15,20 @@ func NewAppControllerInstance() (controllers.AppController, error) {
 
 	userRepository := repositories.NewUserRepository(database)
 	photoRepository := repositories.NewPhotoRepository(database)
+	commentRepository := repositories.NewCommentRepository(database)
 
 	authService := services.NewAuthService(userRepository)
 	photoService := services.NewPhotoService(photoRepository)
+	commentService := services.NewCommentService(commentRepository)
 
 	authController := controllers.NewAuthController(authService)
 	photoController := controllers.NewPhotoController(photoService)
+	commentController := controllers.NewCommentController(commentService)
 
 	appController := controllers.NewAppController(
 		authController,
 		photoController,
+		commentController,
 	)
 
 	return appController, nil

@@ -7,7 +7,8 @@ type Photo struct {
 	Title    string `gorm:"notNull"`
 	Caption  string
 	PhotoURL string `gorm:"notNull"`
-	UserID   uint   `gorm:"notNull;index"`
+	UserID   int    `gorm:"notNull;index"`
+	Comments []Comment
 }
 
 func (p *Photo) ToResponse() dto.PhotoResponse {

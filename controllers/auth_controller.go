@@ -20,9 +20,9 @@ func NewAuthController(authService services.AuthService) AuthController {
 	return &authController{authService}
 }
 
-func (a authController) HandleUserLogin(c *gin.Context) {
+func (ctr authController) HandleUserLogin(c *gin.Context) {
 	payload := c.MustGet("payload").(dto.AuthRequest)
-	response, err := a.authService.Login(&payload)
+	response, err := ctr.authService.Login(&payload)
 	if err != nil {
 		c.AbortWithStatusJSON(err.Code(), dto.ApiResponse{
 			Code:    err.Code(),
@@ -40,9 +40,9 @@ func (a authController) HandleUserLogin(c *gin.Context) {
 	})
 }
 
-func (a authController) HandleUserRegister(c *gin.Context) {
+func (ctr authController) HandleUserRegister(c *gin.Context) {
 	payload := c.MustGet("payload").(dto.UserRequest)
-	response, err := a.authService.Register(&payload)
+	response, err := ctr.authService.Register(&payload)
 	if err != nil {
 		c.AbortWithStatusJSON(err.Code(), dto.ApiResponse{
 			Code:    err.Code(),

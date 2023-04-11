@@ -27,6 +27,19 @@ func NewRouter(ctr controllers.AppController) *gin.Engine {
 			authorizedPhotos.PUT("", middleware.PhotoRequestValidator(), handler.PutPhoto(ctr))
 			authorizedPhotos.DELETE("", handler.DeletePhoto(ctr))
 		}
+
+		comments := photos.Group("/:photoId/comments")
+		{
+			comments.POST("", middleware.CommentRequestValidator(), handler.PostComment(ctr))
+			comments.GET("", handler.GetComments(ctr))
+			comments.GET("/:commentId", handler.GetCommentByID(ctr))
+
+			authorizedComments := comments.Group("/:commentId", middleware.CommentAuthorization())
+			{
+				authorizedComments.PUT("", middleware.CommentRequestValidator(), handler.PutComment(ctr))
+				authorizedComments.DELETE("", handler.DeleteComment(ctr))
+			}
+		}
 	}
 
 	return router

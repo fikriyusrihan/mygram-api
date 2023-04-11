@@ -25,14 +25,14 @@ func NewPhotoController(photoService services.PhotoService) PhotoController {
 	return &photoController{photoService}
 }
 
-func (p photoController) HandleCreatePhoto(c *gin.Context) {
+func (ctr photoController) HandleCreatePhoto(c *gin.Context) {
 	claim := c.MustGet("claim").(jwt.MapClaims)
 	payload := c.MustGet("payload").(dto.PhotoRequest)
 
 	uid := int(claim["id"].(float64))
-	payload.UserID = uint(uid)
+	payload.UserID = uid
 
-	response, err := p.photoService.CreatePhoto(&payload)
+	response, err := ctr.photoService.CreatePhoto(&payload)
 	if err != nil {
 		c.AbortWithStatusJSON(err.Code(), dto.ApiResponse{
 			Code:    err.Code(),
@@ -50,15 +50,15 @@ func (p photoController) HandleCreatePhoto(c *gin.Context) {
 	})
 }
 
-func (p photoController) HandleUpdatePhoto(c *gin.Context) {
+func (ctr photoController) HandleUpdatePhoto(c *gin.Context) {
 	claim := c.MustGet("claim").(jwt.MapClaims)
 	payload := c.MustGet("payload").(dto.PhotoRequest)
 
 	uid := int(claim["id"].(float64))
 	pid, _ := strconv.Atoi(c.Param("photoId"))
-	payload.UserID = uint(uid)
+	payload.UserID = uid
 
-	response, errs := p.photoService.UpdatePhoto(pid, &payload)
+	response, errs := ctr.photoService.UpdatePhoto(pid, &payload)
 	if errs != nil {
 		c.AbortWithStatusJSON(errs.Code(), dto.ApiResponse{
 			Code:    errs.Code(),
@@ -76,10 +76,10 @@ func (p photoController) HandleUpdatePhoto(c *gin.Context) {
 	})
 }
 
-func (p photoController) HandleDeletePhoto(c *gin.Context) {
+func (ctr photoController) HandleDeletePhoto(c *gin.Context) {
 	pid, _ := strconv.Atoi(c.Param("photoId"))
 
-	errs := p.photoService.DeletePhoto(pid)
+	errs := ctr.photoService.DeletePhoto(pid)
 	if errs != nil {
 		c.AbortWithStatusJSON(errs.Code(), dto.ApiResponse{
 			Code:    errs.Code(),
@@ -96,7 +96,7 @@ func (p photoController) HandleDeletePhoto(c *gin.Context) {
 	})
 }
 
-func (p photoController) HandleGetPhotoByID(c *gin.Context) {
+func (ctr photoController) HandleGetPhotoByID(c *gin.Context) {
 	pid, err := strconv.Atoi(c.Param("photoId"))
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, dto.ApiResponse{
@@ -107,7 +107,7 @@ func (p photoController) HandleGetPhotoByID(c *gin.Context) {
 		return
 	}
 
-	response, errs := p.photoService.GetPhotoByID(pid)
+	response, errs := ctr.photoService.GetPhotoByID(pid)
 	if errs != nil {
 		c.AbortWithStatusJSON(errs.Code(), dto.ApiResponse{
 			Code:    errs.Code(),
@@ -125,8 +125,8 @@ func (p photoController) HandleGetPhotoByID(c *gin.Context) {
 	})
 }
 
-func (p photoController) HandleGetPhotos(c *gin.Context) {
-	response, errs := p.photoService.GetPhotos()
+func (ctr photoController) HandleGetPhotos(c *gin.Context) {
+	response, errs := ctr.photoService.GetPhotos()
 	if errs != nil {
 		c.AbortWithStatusJSON(errs.Code(), dto.ApiResponse{
 			Code:    errs.Code(),

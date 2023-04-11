@@ -6,10 +6,10 @@ type SocialMediaRequest struct {
 }
 
 type SocialMediaResponse struct {
-	ID        uint   `json:"id"`
+	ID        int    `json:"id"`
 	Name      string `json:"name"`
 	URL       string `json:"social_media_url"`
-	UserID    uint   `json:"user_id"`
+	UserID    int    `json:"user_id"`
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
 }

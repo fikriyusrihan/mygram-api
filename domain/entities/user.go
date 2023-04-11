@@ -4,10 +4,13 @@ import "my-gram/domain/dto"
 
 type User struct {
 	GormModel
-	Username string `gorm:"notNull;uniqueIndex"`
-	Password string `gorm:"notNull"`
-	Email    string `gorm:"notNull;uniqueIndex"`
-	Age      uint   `gorm:"notNull"`
+	Username    string `gorm:"notNull;uniqueIndex"`
+	Password    string `gorm:"notNull"`
+	Email       string `gorm:"notNull;uniqueIndex"`
+	Age         uint   `gorm:"notNull"`
+	Photos      []Photo
+	Comments    []Comment
+	SocialMedia []SocialMedia
 }
 
 func (u *User) FromRequest(request *dto.UserRequest) {
