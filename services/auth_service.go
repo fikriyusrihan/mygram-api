@@ -22,18 +22,9 @@ func NewAuthService(userRepository repo_interfaces.UserRepository) AuthService {
 }
 
 func (a authService) Login(payload *dto.AuthRequest) (*dto.AuthResponse, errors.Error) {
-	user, errs := a.userRepository.GetUserByUsername(payload.Username)
+	user, errs := a.userRepository.GetUserByEmail(payload.Email)
 	if errs != nil {
-		if errs.Code() == 404 {
-			userByEmail, errsByEmail := a.userRepository.GetUserByEmail(payload.Username)
-			if errsByEmail != nil {
-				return nil, errsByEmail
-			}
-
-			user = userByEmail
-		} else {
-			return nil, errs
-		}
+		return nil, errs
 	}
 
 	isValidPassword := helpers.ValidatePassword(user.Password, payload.Password)
