@@ -10,5 +10,5 @@ type CommentRepository interface {
 	UpdateComment(id int, comment *entities.Comment) (*entities.Comment, errors.Error)
 	DeleteComment(id int) errors.Error
 	GetCommentByID(id int) (*entities.Comment, errors.Error)
-	GetComments(pid int) ([]entities.Comment, errors.Error)
+	GetCommentsByPhotoID(pid int) ([]entities.Comment, errors.Error)
 }

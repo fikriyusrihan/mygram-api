@@ -40,6 +40,7 @@ func (a authService) Login(payload *dto.AuthRequest) (*dto.AuthResponse, errors.
 	}
 
 	response := &dto.AuthResponse{
+		UserID:      user.ID,
 		AccessToken: token,
 	}
 

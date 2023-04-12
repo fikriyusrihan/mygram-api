@@ -14,6 +14,19 @@ func NewRouter(ctr controllers.AppController) *gin.Engine {
 	{
 		users.POST("/login", middleware.AuthRequestValidator(), handler.PostUserLogin(ctr))
 		users.POST("/register", middleware.UserRequestValidator(), handler.PostUserRegister(ctr))
+
+		authorizedUsers := users.Group("", middleware.Authentication())
+		{
+			authorizedUsers.POST("/:userId/social_medias", middleware.SocialMediaRequestValidator(), handler.PostSocialMedia(ctr))
+			authorizedUsers.GET("/:userId/social_medias", handler.GetSocialMediaByUserID(ctr))
+			authorizedUsers.GET("/:userId/social_medias/:socialMediaId", handler.GetSocialMediaByID(ctr))
+
+			authorizedSM := authorizedUsers.Group("/:userId/social_medias/:socialMediaId", middleware.SocialMediaAuthorization())
+			{
+				authorizedSM.PUT("", middleware.SocialMediaRequestValidator(), handler.PutSocialMedia(ctr))
+				authorizedSM.DELETE("", handler.DeleteSocialMedia(ctr))
+			}
+		}
 	}
 
 	photos := router.Group("/photos", middleware.Authentication())

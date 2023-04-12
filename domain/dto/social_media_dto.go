@@ -1,8 +1,9 @@
 package dto
 
 type SocialMediaRequest struct {
-	Name string `json:"name" validate:"required"`
-	URL  string `json:"social_media_url" validate:"required"`
+	Name   string `json:"name" validate:"required"`
+	URL    string `json:"social_media_url" validate:"required"`
+	UserID int    `json:"user_id"`
 }
 
 type SocialMediaResponse struct {

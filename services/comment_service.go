@@ -78,7 +78,7 @@ func (c commentService) GetComments(pid int) ([]dto.CommentResponse, errors.Erro
 		return nil, err
 	}
 
-	comments, err := c.commentRepository.GetComments(pid)
+	comments, err := c.commentRepository.GetCommentsByPhotoID(pid)
 	if err != nil {
 		return nil, err
 	}

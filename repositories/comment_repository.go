@@ -97,7 +97,7 @@ func (c commentRepository) GetCommentByID(id int) (*entities.Comment, errors.Err
 	return &comment, nil
 }
 
-func (c commentRepository) GetComments(pid int) ([]entities.Comment, errors.Error) {
+func (c commentRepository) GetCommentsByPhotoID(pid int) ([]entities.Comment, errors.Error) {
 	var comments []entities.Comment
 	err := c.db.Model(&entities.Comment{}).Where("photo_id = ?", pid).Find(&comments).Error
 	if err != nil {

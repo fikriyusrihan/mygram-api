@@ -8,6 +8,43 @@ import (
 	"strconv"
 )
 
+func SocialMediaRequestValidator() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		uid, err := strconv.Atoi(c.Param("userId"))
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, dto.ApiResponse{
+				Code:    http.StatusBadRequest,
+				Status:  "BAD_REQUEST",
+				Message: "Invalid user id. User id must be an integer",
+			})
+			return
+		}
+
+		var request dto.SocialMediaRequest
+		if err = c.ShouldBindJSON(&request); err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, dto.ApiResponse{
+				Code:    http.StatusBadRequest,
+				Status:  "BAD_REQUEST",
+				Message: "Invalid request body. Please check your request body and try again",
+			})
+			return
+		}
+
+		if err = helpers.Validate(request); err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, dto.ApiResponse{
+				Code:    http.StatusBadRequest,
+				Status:  "BAD_REQUEST",
+				Message: "Invalid request body. Please check your request body and try again",
+			})
+			return
+		}
+
+		request.UserID = uid
+		c.Set("payload", request)
+		c.Next()
+	}
+}
+
 func CommentRequestValidator() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		_, err := strconv.Atoi(c.Param("photoId"))
