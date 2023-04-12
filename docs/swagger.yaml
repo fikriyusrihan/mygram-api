@@ -1,0 +1,803 @@
+basePath: /
+definitions:
+  dto.ApiResponse:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        type: object
+      message:
+        example: Your request has been processed successfully
+        type: string
+      status:
+        example: OK
+        type: string
+    type: object
+  dto.AuthRequest:
+    properties:
+      email:
+        example: fikriyusrihan@gmail.com
+        type: string
+      password:
+        example: supersecret
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.AuthResponse:
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIn0.ri7_-S3RIefxm6JxzsJSWVSyvSTOIivZgcuVDqaR3fQ
+        type: string
+      user_id:
+        example: 1
+        type: integer
+    type: object
+  dto.CommentRequest:
+    properties:
+      message:
+        example: Nice photo!
+        type: string
+    required:
+    - message
+    type: object
+  dto.CommentResponse:
+    properties:
+      created_at:
+        example: "2021-08-01T00:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      message:
+        example: Nice photo!
+        type: string
+      photo_id:
+        example: 1
+        type: integer
+      updated_at:
+        example: "2021-08-01T00:00:00Z"
+        type: string
+      user_id:
+        example: 1
+        type: integer
+    type: object
+  dto.PhotoDetailResponse:
+    properties:
+      caption:
+        example: I had a great time in Bali!
+        type: string
+      comments:
+        items:
+          $ref: '#/definitions/dto.CommentResponse'
+        type: array
+      created_at:
+        example: "2021-08-01T00:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      photo_url:
+        example: https://my-gram.com/photos/1.jpg
+        type: string
+      title:
+        example: Vacation in Bali
+        type: string
+      updated_at:
+        example: "2021-08-01T00:00:00Z"
+        type: string
+      user_id:
+        example: 1
+        type: integer
+    type: object
+  dto.PhotoRequest:
+    properties:
+      caption:
+        example: I had a great time in Bali!
+        type: string
+      photo_url:
+        example: https://my-gram.com/photos/1.jpg
+        type: string
+      title:
+        example: Vacation in Bali
+        type: string
+    required:
+    - photo_url
+    - title
+    type: object
+  dto.PhotoResponse:
+    properties:
+      caption:
+        example: I had a great time in Bali!
+        type: string
+      id:
+        example: 1
+        type: integer
+      photo_url:
+        example: https://my-gram.com/photos/1.jpg
+        type: string
+      title:
+        example: Vacation in Bali
+        type: string
+      user_id:
+        example: 1
+        type: integer
+    type: object
+  dto.SocialMediaRequest:
+    properties:
+      name:
+        example: Instagram
+        type: string
+      social_media_url:
+        example: https://instagram.com/fikriyusrihan
+        type: string
+    required:
+    - name
+    - social_media_url
+    type: object
+  dto.SocialMediaResponse:
+    properties:
+      created_at:
+        example: "2021-08-01T00:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: Instagram
+        type: string
+      social_media_url:
+        example: https://instagram.com/fikriyusrihan
+        type: string
+      updated_at:
+        example: "2021-08-01T00:00:00Z"
+        type: string
+      user_id:
+        example: 1
+        type: integer
+    type: object
+  dto.UserRequest:
+    properties:
+      age:
+        example: 24
+        minimum: 8
+        type: integer
+      email:
+        example: fikriyusrihan@gmail.com
+        type: string
+      password:
+        example: supersecret
+        minLength: 6
+        type: string
+      username:
+        example: fikriyusrihan
+        type: string
+    required:
+    - age
+    - email
+    - password
+    - username
+    type: object
+  dto.UserResponse:
+    properties:
+      age:
+        example: 24
+        type: integer
+      created_at:
+        example: "2021-08-01T00:00:00Z"
+        type: string
+      email:
+        example: fikriyusrihan@gmail.com
+        type: string
+      id:
+        example: 1
+        type: integer
+      updated_at:
+        example: "2021-08-01T00:00:00Z"
+        type: string
+      username:
+        example: fikriyusrihan
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact:
+    email: fikriyusrihan@gmail.com
+    name: Fikri Yusrihan
+    url: https://fikriyusrihan.github.io
+  description: My Gram API is a final project of Hacktiv8 Golang Bootcamp. This API
+    is used to manage social media accounts and photos.
+  license:
+    url: https://opensource.org/licenses/MIT
+  title: My Gram API Documentation
+  version: 1.0.0
+paths:
+  /photos:
+    get:
+      description: Get all photos. User must be authenticated before using this endpoint.
+      parameters:
+      - description: Authentication Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.PhotoResponse'
+                  type: array
+              type: object
+      security:
+      - Bearer: []
+      summary: Get Photos
+      tags:
+      - Photos
+    post:
+      consumes:
+      - application/json
+      description: Create new photo with title, caption, and photo url. User must
+        be authenticated before using this endpoint.
+      parameters:
+      - description: Authentication Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Photo Request Payload
+        in: body
+        name: Payload
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PhotoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.PhotoResponse'
+              type: object
+      security:
+      - Bearer: []
+      summary: Create Photo
+      tags:
+      - Photos
+  /photos/{photoId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete photo by photo id. Only the owner of the photo can delete
+        it. User must be authenticated before using this endpoint.
+      parameters:
+      - description: Authentication Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Photo ID
+        in: path
+        name: PhotoId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+      security:
+      - Bearer: []
+      summary: Delete Photo
+      tags:
+      - Photos
+    get:
+      description: Get photo by photo id. User must be authenticated before using
+        this endpoint.
+      parameters:
+      - description: Authentication Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Photo ID
+        in: path
+        name: PhotoId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.PhotoDetailResponse'
+              type: object
+      security:
+      - Bearer: []
+      summary: Get Photo By ID
+      tags:
+      - Photos
+    put:
+      consumes:
+      - application/json
+      description: Update photo with title, caption, and photo url. User must be authenticated
+        before using this endpoint.
+      parameters:
+      - description: Authentication Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Photo ID
+        in: path
+        name: PhotoId
+        required: true
+        type: integer
+      - description: Photo Request Payload
+        in: body
+        name: Payload
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PhotoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.PhotoResponse'
+              type: object
+      security:
+      - Bearer: []
+      summary: Update Photo
+      tags:
+      - Photos
+  /photos/{photoId}/comments:
+    get:
+      description: Get comments by photo id. User must be authenticated before using
+        this endpoint.
+      parameters:
+      - description: Authentication Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Photo ID
+        in: path
+        name: PhotoId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.CommentResponse'
+                  type: array
+              type: object
+      security:
+      - Bearer: []
+      summary: Get Comments
+      tags:
+      - Comments
+    post:
+      consumes:
+      - application/json
+      description: Create new comment with comment text. User must be authenticated
+        before using this endpoint.
+      parameters:
+      - description: Authentication Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Photo ID
+        in: path
+        name: PhotoId
+        required: true
+        type: integer
+      - description: Comment Request Payload
+        in: body
+        name: Payload
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CommentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.CommentResponse'
+              type: object
+      security:
+      - Bearer: []
+      summary: Create Comment
+      tags:
+      - Comments
+  /photos/{photoId}/comments/{commentId}:
+    delete:
+      description: Delete comment. Only comment owner can delete the comment. User
+        must be authenticated before using this endpoint.
+      parameters:
+      - description: Authentication Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Photo ID
+        in: path
+        name: PhotoId
+        required: true
+        type: integer
+      - description: Comment ID
+        in: path
+        name: CommentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+      security:
+      - Bearer: []
+      summary: Delete Comment
+      tags:
+      - Comments
+    get:
+      description: Get comment by id. User must be authenticated before using this
+        endpoint.
+      parameters:
+      - description: Authentication Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Photo ID
+        in: path
+        name: PhotoId
+        required: true
+        type: integer
+      - description: Comment ID
+        in: path
+        name: CommentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.CommentResponse'
+              type: object
+      security:
+      - Bearer: []
+      summary: Get Comment By ID
+      tags:
+      - Comments
+    put:
+      consumes:
+      - application/json
+      description: Update comment with comment text. User must be authenticated before
+        using this endpoint.
+      parameters:
+      - description: Authentication Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Photo ID
+        in: path
+        name: PhotoId
+        required: true
+        type: integer
+      - description: Comment ID
+        in: path
+        name: CommentId
+        required: true
+        type: integer
+      - description: Comment Request Payload
+        in: body
+        name: Payload
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.CommentResponse'
+              type: object
+      security:
+      - Bearer: []
+      summary: Update Comment
+      tags:
+      - Comments
+  /users/{userId}/social_media:
+    get:
+      description: Get social media by user id. User must be authenticated before
+        using this endpoint.
+      parameters:
+      - description: Authentication Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: UserID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.SocialMediaResponse'
+                  type: array
+              type: object
+      security:
+      - Bearer: []
+      summary: Get Social Media By User ID
+      tags:
+      - Social Media
+    post:
+      consumes:
+      - application/json
+      description: Create new social media with name and url. User must be authenticated
+        before using this endpoint.
+      parameters:
+      - description: Authentication Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: UserID
+        required: true
+        type: integer
+      - description: Social Media Request Payload
+        in: body
+        name: Payload
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SocialMediaRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.SocialMediaResponse'
+              type: object
+      security:
+      - Bearer: []
+      summary: Create Social Media
+      tags:
+      - Social Media
+  /users/{userId}/social_media/{socialMediaId}:
+    delete:
+      description: Delete social media. Only the owner of the user can delete the
+        social media. User must be authenticated before using this endpoint.
+      parameters:
+      - description: Authentication Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: UserID
+        required: true
+        type: integer
+      - description: Social Media ID
+        in: path
+        name: SocialMediaID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+      security:
+      - Bearer: []
+      summary: Delete Social Media
+      tags:
+      - Social Media
+    get:
+      description: Get social media by user id. User must be authenticated before
+        using this endpoint.
+      parameters:
+      - description: Authentication Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: UserID
+        required: true
+        type: integer
+      - description: Social Media ID
+        in: path
+        name: SocialMediaID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.SocialMediaResponse'
+              type: object
+      security:
+      - Bearer: []
+      summary: Get Social Media By User ID
+      tags:
+      - Social Media
+    put:
+      consumes:
+      - application/json
+      description: Update social media with name and url. User must be authenticated
+        before using this endpoint.
+      parameters:
+      - description: Authentication Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: UserID
+        required: true
+        type: integer
+      - description: Social Media ID
+        in: path
+        name: SocialMediaID
+        required: true
+        type: integer
+      - description: Social Media Request Payload
+        in: body
+        name: Payload
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SocialMediaRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.SocialMediaResponse'
+              type: object
+      security:
+      - Bearer: []
+      summary: Update Social Media
+      tags:
+      - Social Media
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate registered user with email and password
+      parameters:
+      - description: User Request Payload
+        in: body
+        name: Payload
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AuthRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.AuthResponse'
+              type: object
+      summary: Authenticate User
+      tags:
+      - Auth
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Register new user with username, email, age, and password
+      parameters:
+      - description: User Request Payload
+        in: body
+        name: Payload
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.UserResponse'
+              type: object
+      summary: Register User
+      tags:
+      - Auth
+swagger: "2.0"

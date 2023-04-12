@@ -2,13 +2,18 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"my-gram/controllers"
+	_ "my-gram/docs"
 	"my-gram/infrastructure/http/handler"
 	"my-gram/infrastructure/http/middleware"
 )
 
 func NewRouter(ctr controllers.AppController) *gin.Engine {
 	router := gin.Default()
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	users := router.Group("/users")
 	{

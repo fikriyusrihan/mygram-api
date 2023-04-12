@@ -20,6 +20,15 @@ func NewAuthController(authService services.AuthService) AuthController {
 	return &authController{authService}
 }
 
+// HandleUserLogin User login handler
+// @Summary Authenticate User
+// @Description Authenticate registered user with email and password
+// @Tags Auth
+// @Param Payload body dto.AuthRequest true "User Request Payload"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} dto.ApiResponse{data=dto.AuthResponse}
+// @Router /users/login [post]
 func (ctr authController) HandleUserLogin(c *gin.Context) {
 	payload := c.MustGet("payload").(dto.AuthRequest)
 	response, err := ctr.authService.Login(&payload)
@@ -40,6 +49,15 @@ func (ctr authController) HandleUserLogin(c *gin.Context) {
 	})
 }
 
+// HandleUserRegister User register handler
+// @Summary Register User
+// @Description Register new user with username, email, age, and password
+// @Tags Auth
+// @Param Payload body dto.UserRequest true "User Request Payload"
+// @Accept  json
+// @Produce  json
+// @Success 201 {object} dto.ApiResponse{data=dto.UserResponse}
+// @Router /users/register [post]
 func (ctr authController) HandleUserRegister(c *gin.Context) {
 	payload := c.MustGet("payload").(dto.UserRequest)
 	response, err := ctr.authService.Register(&payload)

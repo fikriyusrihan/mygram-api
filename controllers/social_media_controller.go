@@ -25,6 +25,18 @@ func NewSocialMediaController(socialMediaService services.SocialMediaService) So
 	return &socialMediaController{socialMediaService}
 }
 
+// HandleCreateSocialMedia Create social media handler
+// @Summary Create Social Media
+// @Description Create new social media with name and url. User must be authenticated before using this endpoint.
+// @Tags Social Media
+// @Security Bearer
+// @Param Authorization header string true "Authentication Bearer Token"
+// @Param UserID path int true "User ID"
+// @Param Payload body dto.SocialMediaRequest true "Social Media Request Payload"
+// @Accept  json
+// @Produce  json
+// @Success 201 {object} dto.ApiResponse{data=dto.SocialMediaResponse}
+// @Router /users/{userId}/social_media [post]
 func (ctr socialMediaController) HandleCreateSocialMedia(c *gin.Context) {
 	claim := c.MustGet("claim").(jwt.MapClaims)
 	payload := c.MustGet("payload").(dto.SocialMediaRequest)
@@ -58,6 +70,19 @@ func (ctr socialMediaController) HandleCreateSocialMedia(c *gin.Context) {
 	})
 }
 
+// HandleUpdateSocialMedia Update social media handler
+// @Summary Update Social Media
+// @Description Update social media with name and url. User must be authenticated before using this endpoint.
+// @Tags Social Media
+// @Security Bearer
+// @Param Authorization header string true "Authentication Bearer Token"
+// @Param UserID path int true "User ID"
+// @Param SocialMediaID path int true "Social Media ID"
+// @Param Payload body dto.SocialMediaRequest true "Social Media Request Payload"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} dto.ApiResponse{data=dto.SocialMediaResponse}
+// @Router /users/{userId}/social_media/{socialMediaId} [put]
 func (ctr socialMediaController) HandleUpdateSocialMedia(c *gin.Context) {
 	payload := c.MustGet("payload").(dto.SocialMediaRequest)
 
@@ -80,6 +105,17 @@ func (ctr socialMediaController) HandleUpdateSocialMedia(c *gin.Context) {
 	})
 }
 
+// HandleDeleteSocialMedia Delete social media handler
+// @Summary Delete Social Media
+// @Description Delete social media. Only the owner of the user can delete the social media. User must be authenticated before using this endpoint.
+// @Tags Social Media
+// @Security Bearer
+// @Param Authorization header string true "Authentication Bearer Token"
+// @Param UserID path int true "User ID"
+// @Param SocialMediaID path int true "Social Media ID"
+// @Produce  json
+// @Success 200 {object} dto.ApiResponse
+// @Router /users/{userId}/social_media/{socialMediaId} [delete]
 func (ctr socialMediaController) HandleDeleteSocialMedia(c *gin.Context) {
 	smid, _ := strconv.Atoi(c.Param("socialMediaId"))
 
@@ -100,6 +136,17 @@ func (ctr socialMediaController) HandleDeleteSocialMedia(c *gin.Context) {
 	})
 }
 
+// HandleGetSocialMediaByID Get social media by user id handler
+// @Summary Get Social Media By User ID
+// @Description Get social media by user id. User must be authenticated before using this endpoint.
+// @Tags Social Media
+// @Security Bearer
+// @Param Authorization header string true "Authentication Bearer Token"
+// @Param UserID path int true "User ID"
+// @Param SocialMediaID path int true "Social Media ID"
+// @Produce  json
+// @Success 200 {object} dto.ApiResponse{data=dto.SocialMediaResponse}
+// @Router /users/{userId}/social_media/{socialMediaId} [get]
 func (ctr socialMediaController) HandleGetSocialMediaByID(c *gin.Context) {
 	smid, err := strconv.Atoi(c.Param("socialMediaId"))
 	if err != nil {
@@ -129,6 +176,16 @@ func (ctr socialMediaController) HandleGetSocialMediaByID(c *gin.Context) {
 	})
 }
 
+// HandleGetSocialMediaByUserID Get social media by user id handler
+// @Summary Get Social Media By User ID
+// @Description Get social media by user id. User must be authenticated before using this endpoint.
+// @Tags Social Media
+// @Security Bearer
+// @Param Authorization header string true "Authentication Bearer Token"
+// @Param UserID path int true "User ID"
+// @Produce  json
+// @Success 200 {object} dto.ApiResponse{data=[]dto.SocialMediaResponse}
+// @Router /users/{userId}/social_media [get]
 func (ctr socialMediaController) HandleGetSocialMediaByUserID(c *gin.Context) {
 	uid, err := strconv.Atoi(c.Param("userId"))
 	if err != nil {

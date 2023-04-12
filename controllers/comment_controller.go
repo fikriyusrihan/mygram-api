@@ -25,6 +25,18 @@ func NewCommentController(commentService services.CommentService) CommentControl
 	return &commentController{commentService}
 }
 
+// HandleCreateComment Create comment handler
+// @Summary Create Comment
+// @Description Create new comment with comment text. User must be authenticated before using this endpoint.
+// @Tags Comments
+// @Security Bearer
+// @Param Authorization header string true "Authentication Bearer Token"
+// @Param PhotoId path int true "Photo ID"
+// @Param Payload body dto.CommentRequest true "Comment Request Payload"
+// @Accept  json
+// @Produce  json
+// @Success 201 {object} dto.ApiResponse{data=dto.CommentResponse}
+// @Router /photos/{photoId}/comments [post]
 func (ctr commentController) HandleCreateComment(c *gin.Context) {
 	claim := c.MustGet("claim").(jwt.MapClaims)
 	payload := c.MustGet("payload").(dto.CommentRequest)
@@ -52,6 +64,19 @@ func (ctr commentController) HandleCreateComment(c *gin.Context) {
 	})
 }
 
+// HandleUpdateComment Update comment handler
+// @Summary Update Comment
+// @Description Update comment with comment text. User must be authenticated before using this endpoint.
+// @Tags Comments
+// @Security Bearer
+// @Param Authorization header string true "Authentication Bearer Token"
+// @Param PhotoId path int true "Photo ID"
+// @Param CommentId path int true "Comment ID"
+// @Param Payload body dto.CommentRequest true "Comment Request Payload"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} dto.ApiResponse{data=dto.CommentResponse}
+// @Router /photos/{photoId}/comments/{commentId} [put]
 func (ctr commentController) HandleUpdateComment(c *gin.Context) {
 	payload := c.MustGet("payload").(dto.CommentRequest)
 	cid, _ := strconv.Atoi(c.Param("commentId"))
@@ -74,6 +99,17 @@ func (ctr commentController) HandleUpdateComment(c *gin.Context) {
 	})
 }
 
+// HandleDeleteComment Delete comment handler
+// @Summary Delete Comment
+// @Description Delete comment. Only comment owner can delete the comment. User must be authenticated before using this endpoint.
+// @Tags Comments
+// @Security Bearer
+// @Param Authorization header string true "Authentication Bearer Token"
+// @Param PhotoId path int true "Photo ID"
+// @Param CommentId path int true "Comment ID"
+// @Produce  json
+// @Success 200 {object} dto.ApiResponse
+// @Router /photos/{photoId}/comments/{commentId} [delete]
 func (ctr commentController) HandleDeleteComment(c *gin.Context) {
 	cid, _ := strconv.Atoi(c.Param("commentId"))
 
@@ -94,6 +130,17 @@ func (ctr commentController) HandleDeleteComment(c *gin.Context) {
 	})
 }
 
+// HandleGetCommentByID Get comment by id handler
+// @Summary Get Comment By ID
+// @Description Get comment by id. User must be authenticated before using this endpoint.
+// @Tags Comments
+// @Security Bearer
+// @Param Authorization header string true "Authentication Bearer Token"
+// @Param PhotoId path int true "Photo ID"
+// @Param CommentId path int true "Comment ID"
+// @Produce  json
+// @Success 200 {object} dto.ApiResponse{data=dto.CommentResponse}
+// @Router /photos/{photoId}/comments/{commentId} [get]
 func (ctr commentController) HandleGetCommentByID(c *gin.Context) {
 	cid, err := strconv.Atoi(c.Param("commentId"))
 	if err != nil {
@@ -123,6 +170,16 @@ func (ctr commentController) HandleGetCommentByID(c *gin.Context) {
 	})
 }
 
+// HandleGetComments Get comments handler
+// @Summary Get Comments
+// @Description Get comments by photo id. User must be authenticated before using this endpoint.
+// @Tags Comments
+// @Security Bearer
+// @Param Authorization header string true "Authentication Bearer Token"
+// @Param PhotoId path int true "Photo ID"
+// @Produce  json
+// @Success 200 {object} dto.ApiResponse{data=[]dto.CommentResponse}
+// @Router /photos/{photoId}/comments [get]
 func (ctr commentController) HandleGetComments(c *gin.Context) {
 	pid, err := strconv.Atoi(c.Param("photoId"))
 	if err != nil {

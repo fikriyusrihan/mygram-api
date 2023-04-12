@@ -25,6 +25,17 @@ func NewPhotoController(photoService services.PhotoService) PhotoController {
 	return &photoController{photoService}
 }
 
+// HandleCreatePhoto Create photo handler
+// @Summary Create Photo
+// @Description Create new photo with title, caption, and photo url. User must be authenticated before using this endpoint.
+// @Tags Photos
+// @Security Bearer
+// @Param Authorization header string true "Authentication Bearer Token"
+// @Param Payload body dto.PhotoRequest true "Photo Request Payload"
+// @Accept  json
+// @Produce  json
+// @Success 201 {object} dto.ApiResponse{data=dto.PhotoResponse}
+// @Router /photos [post]
 func (ctr photoController) HandleCreatePhoto(c *gin.Context) {
 	claim := c.MustGet("claim").(jwt.MapClaims)
 	payload := c.MustGet("payload").(dto.PhotoRequest)
@@ -50,6 +61,18 @@ func (ctr photoController) HandleCreatePhoto(c *gin.Context) {
 	})
 }
 
+// HandleUpdatePhoto Update photo handler
+// @Summary Update Photo
+// @Description Update photo with title, caption, and photo url. User must be authenticated before using this endpoint.
+// @Tags Photos
+// @Security Bearer
+// @Param Authorization header string true "Authentication Bearer Token"
+// @Param PhotoId path int true "Photo ID"
+// @Param Payload body dto.PhotoRequest true "Photo Request Payload"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} dto.ApiResponse{data=dto.PhotoResponse}
+// @Router /photos/{photoId} [put]
 func (ctr photoController) HandleUpdatePhoto(c *gin.Context) {
 	claim := c.MustGet("claim").(jwt.MapClaims)
 	payload := c.MustGet("payload").(dto.PhotoRequest)
@@ -76,6 +99,17 @@ func (ctr photoController) HandleUpdatePhoto(c *gin.Context) {
 	})
 }
 
+// HandleDeletePhoto Delete photo handler
+// @Summary Delete Photo
+// @Description Delete photo by photo id. Only the owner of the photo can delete it. User must be authenticated before using this endpoint.
+// @Tags Photos
+// @Security Bearer
+// @Param Authorization header string true "Authentication Bearer Token"
+// @Param PhotoId path int true "Photo ID"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} dto.ApiResponse
+// @Router /photos/{photoId} [delete]
 func (ctr photoController) HandleDeletePhoto(c *gin.Context) {
 	pid, _ := strconv.Atoi(c.Param("photoId"))
 
@@ -96,6 +130,16 @@ func (ctr photoController) HandleDeletePhoto(c *gin.Context) {
 	})
 }
 
+// HandleGetPhotoByID Get photo by id handler
+// @Summary Get Photo By ID
+// @Description Get photo by photo id. User must be authenticated before using this endpoint.
+// @Tags Photos
+// @Security Bearer
+// @Param Authorization header string true "Authentication Bearer Token"
+// @Param PhotoId path int true "Photo ID"
+// @Produce  json
+// @Success 200 {object} dto.ApiResponse{data=dto.PhotoDetailResponse}
+// @Router /photos/{photoId} [get]
 func (ctr photoController) HandleGetPhotoByID(c *gin.Context) {
 	pid, err := strconv.Atoi(c.Param("photoId"))
 	if err != nil {
@@ -125,6 +169,15 @@ func (ctr photoController) HandleGetPhotoByID(c *gin.Context) {
 	})
 }
 
+// HandleGetPhotos Get photos handler
+// @Summary Get Photos
+// @Description Get all photos. User must be authenticated before using this endpoint.
+// @Tags Photos
+// @Security Bearer
+// @Param Authorization header string true "Authentication Bearer Token"
+// @Produce  json
+// @Success 200 {object} dto.ApiResponse{data=[]dto.PhotoResponse}
+// @Router /photos [get]
 func (ctr photoController) HandleGetPhotos(c *gin.Context) {
 	response, errs := ctr.photoService.GetPhotos()
 	if errs != nil {
