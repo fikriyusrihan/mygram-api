@@ -11,7 +11,7 @@ type PhotoService interface {
 	CreatePhoto(payload *dto.PhotoRequest) (*dto.PhotoResponse, errors.Error)
 	UpdatePhoto(id int, payload *dto.PhotoRequest) (*dto.PhotoResponse, errors.Error)
 	DeletePhoto(id int) errors.Error
-	GetPhotoByID(id int) (*dto.PhotoResponse, errors.Error)
+	GetPhotoByID(id int) (*dto.PhotoDetailResponse, errors.Error)
 	GetPhotos() ([]dto.PhotoResponse, errors.Error)
 }
 
@@ -58,13 +58,13 @@ func (p photoService) DeletePhoto(id int) errors.Error {
 	return nil
 }
 
-func (p photoService) GetPhotoByID(id int) (*dto.PhotoResponse, errors.Error) {
+func (p photoService) GetPhotoByID(id int) (*dto.PhotoDetailResponse, errors.Error) {
 	photo, err := p.photoRepository.GetPhotoByID(id)
 	if err != nil {
 		return nil, err
 	}
 
-	response := photo.ToResponse()
+	response := photo.ToDetailResponse()
 	return &response, nil
 }
 

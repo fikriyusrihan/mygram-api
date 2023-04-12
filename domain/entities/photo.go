@@ -13,11 +13,27 @@ type Photo struct {
 
 func (p *Photo) ToResponse() dto.PhotoResponse {
 	return dto.PhotoResponse{
+		ID:       p.ID,
+		Title:    p.Title,
+		Caption:  p.Caption,
+		PhotoURL: p.PhotoURL,
+		UserID:   p.UserID,
+	}
+}
+
+func (p *Photo) ToDetailResponse() dto.PhotoDetailResponse {
+	var comments []dto.CommentResponse
+	for _, c := range p.Comments {
+		comments = append(comments, *c.ToResponse())
+	}
+
+	return dto.PhotoDetailResponse{
 		ID:        p.ID,
 		Title:     p.Title,
 		Caption:   p.Caption,
 		PhotoURL:  p.PhotoURL,
 		UserID:    p.UserID,
+		Comments:  comments,
 		CreatedAt: p.CreatedAt.String(),
 		UpdatedAt: p.UpdatedAt.String(),
 	}
